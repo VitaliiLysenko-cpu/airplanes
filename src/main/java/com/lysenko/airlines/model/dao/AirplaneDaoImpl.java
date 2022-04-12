@@ -62,14 +62,14 @@ public class AirplaneDaoImpl implements AirplaneDao {
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_AIRPLANES)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            return  getAirplaneList(resultSet);
+            return getAirplaneList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
     }
 
-    private List<Airplane> getAirplaneList(  ResultSet rs) throws SQLException {
+    private List<Airplane> getAirplaneList(ResultSet rs) throws SQLException {
         List<Airplane> listAirplanes = new ArrayList<>();
         while (rs.next()) {
             Airplane airplane = new Airplane.AirplaneBuilder()
@@ -97,7 +97,6 @@ public class AirplaneDaoImpl implements AirplaneDao {
         }
     }
 
-
     public List<Airplane> searchAirplanesByCrewName(String name) {
         Airplane airplane;
         List<Airplane> listAirplanes = new ArrayList<>();
@@ -105,7 +104,7 @@ public class AirplaneDaoImpl implements AirplaneDao {
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_AIRPLANES_BY_CREW_NAME)) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            return  getAirplaneList(resultSet);
+            return getAirplaneList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
