@@ -1,6 +1,7 @@
 package com.lysenko.airlines.model.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class CrewMember {
@@ -11,13 +12,13 @@ public class CrewMember {
     private final LocalDate birthday;
     private final Citizenship citizenship;
 
-    public CrewMember(int id, String firstName, String lastName, Position position, LocalDate birthday, Citizenship citizenship) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.position = position;
-        this.birthday = birthday;
-        this.citizenship = citizenship;
+    public CrewMember(CrewMemberBuilder crewMemberBuilder) {
+        this.id = crewMemberBuilder.id;
+        this.firstName = crewMemberBuilder.lastName;
+        this.lastName = crewMemberBuilder.lastName;
+        this.position = crewMemberBuilder.position;
+        this.birthday = crewMemberBuilder.birthday;
+        this.citizenship = crewMemberBuilder.citizenship;
     }
 
     public int getId() {
@@ -67,5 +68,44 @@ public class CrewMember {
                 ", birthday=" + birthday +
                 ", citizenship=" + citizenship +
                 '}';
+    }
+    public static class CrewMemberBuilder {
+        private  int id;
+        private  String firstName;
+        private  String lastName;
+        private  Position position;
+        private  LocalDate birthday;
+        private  Citizenship citizenship;
+
+        public CrewMemberBuilder withId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public CrewMemberBuilder withFirstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public CrewMemberBuilder withLastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+        public CrewMemberBuilder withPosition(Position position) {
+            this.position = position;
+            return this;
+        }
+        public CrewMemberBuilder withBirthday(LocalDate birthday) {
+            this.birthday = birthday;
+            return this;
+        }
+        public CrewMemberBuilder withCitizenship(Citizenship citizenship) {
+            this.citizenship = citizenship;
+            return this;
+        }
+
+        public CrewMember build() {
+            return new CrewMember(this);
+        }
     }
 }

@@ -1,20 +1,20 @@
 package com.lysenko.airlines.model.dao;
 
 import com.lysenko.airlines.model.entity.Airplane;
-import com.lysenko.airlines.model.entity.Crew;
 
 import java.util.List;
 
 public interface AirplaneDao {
-    boolean addNewAirplane(Airplane newAirplane);
+
+    void addNewAirplane(Airplane newAirplane);
 
     Airplane findAirplaneByCode(String code);
 
     List<Airplane> findAllAirplanes();
 
-    boolean deleteAirplaneByParameter(String parameter);
+    void deleteAirplaneByParameter(String parameter1, String parameter2);
 
-    Airplane searchAirplanesByCrewName(String name);
+    List<Airplane> searchAirplanesByCrewName(String name);
 
-    boolean updateAirplaneWithProvidedCrew(Crew crew);
+    void updateAirplaneWithProvidedCrew(int crewId, String code, String name);
 }

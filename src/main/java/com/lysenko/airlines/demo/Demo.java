@@ -15,16 +15,35 @@ public class Demo {
         airplaneDao.addNewAirplane(createAirplane("123", "airplane", "U124",
                 LocalDate.of(2002, 3, 10), 270, 17345.45, 5));
         List<Airplane> airplanes = airplaneDao.findAllAirplanes();
-        for (int i = 0; i < airplanes.size(); i++) {
+        for (Airplane a: airplanes) {
             System.out.println(Arrays.toString(airplanes.toArray()));
         }
 
         System.out.println(airplaneDao.findAirplaneByCode("123"));
+
+        airplaneDao.deleteAirplaneByParameter("125","airplane1");
+
+        System.out.println("----------------------");
+        List<Airplane> crew3 = airplaneDao.searchAirplanesByCrewName("crew5");
+        for (Airplane a:crew3) {
+            System.out.println(a);
+        }
+
+        airplaneDao.updateAirplaneWithProvidedCrew(2,"126", "airplane");
     }
+
 
     private static Airplane createAirplane(String code, String name, String model, LocalDate manufactureDate,
                                            int capacity, double flightRange, int crew) {
-        Airplane airplane = new Airplane(code, name, model, manufactureDate, capacity, flightRange, crew);
+        Airplane airplane = new Airplane.AirplaneBuilder()
+                .withCode(code)
+                .withName(name)
+                .withModel(model)
+                .withManufactureDate(manufactureDate)
+                .withCapacity(capacity)
+                .withFlightRange(flightRange)
+                .withCrew(crew)
+                .build();
         return airplane;
     }
 }

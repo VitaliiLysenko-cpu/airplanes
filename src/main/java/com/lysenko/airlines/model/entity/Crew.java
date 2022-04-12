@@ -8,10 +8,10 @@ public class Crew {
     private final String name;
     private final List<CrewMember> crewMembers;
 
-    public Crew(int id, String name, List<CrewMember> crewMembers) {
-        this.id = id;
-        this.name = name;
-        this.crewMembers = crewMembers;
+    public Crew(CrewBuilder crewBuilder) {
+        this.id = crewBuilder.id;
+        this.name = crewBuilder.name;
+        this.crewMembers = crewBuilder.crewMembers;
     }
 
     public List<CrewMember> getCrewMembers() {
@@ -46,5 +46,30 @@ public class Crew {
                 ", name='" + name + '\'' +
                 ", crewMembers=" + crewMembers +
                 '}';
+    }
+
+    public static class CrewBuilder {
+        private int id;
+        private String name;
+        private List<CrewMember> crewMembers;
+
+        public CrewBuilder withId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public CrewBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public CrewBuilder withCrewMembers(List<CrewMember> crewMembers) {
+            this.crewMembers = crewMembers;
+            return this;
+        }
+
+        public Crew build() {
+            return new Crew(this);
+        }
     }
 }

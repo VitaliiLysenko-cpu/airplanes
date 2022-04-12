@@ -11,21 +11,15 @@ public class Airplane {
     private final int capacity;
     private final double flightRange;
     private final int crew;
-    private int id;
 
-    public Airplane(String code, String name, String model, LocalDate manufactureDate,
-                    int capacity, double flightRange, int crew) {
-        this.code = code;
-        this.name = name;
-        this.model = model;
-        this.manufactureDate = manufactureDate;
-        this.capacity = capacity;
-        this.flightRange = flightRange;
-        this.crew = crew;
-    }
-
-    public int getId() {
-        return id;
+    private Airplane(AirplaneBuilder airplaneBuilder) {
+        this.code = airplaneBuilder.code;
+        this.name = airplaneBuilder.name;
+        this.model = airplaneBuilder.model;
+        this.manufactureDate = airplaneBuilder.manufactureDate;
+        this.capacity = airplaneBuilder.capacity;
+        this.flightRange = airplaneBuilder.flightRange;
+        this.crew = airplaneBuilder.crew;
     }
 
     public String getCode() {
@@ -76,7 +70,6 @@ public class Airplane {
     @Override
     public String toString() {
         return "Airplane{" +
-                "id=" + id +
                 ", code='" + code + '\'' +
                 ", name='" + name + '\'' +
                 ", model='" + model + '\'' +
@@ -85,5 +78,54 @@ public class Airplane {
                 ", flightRange=" + flightRange +
                 ", crew=" + crew +
                 '}';
+    }
+
+    public static class AirplaneBuilder {
+        private String code;
+        private String name;
+        private String model;
+        private LocalDate manufactureDate;
+        private int capacity;
+        private double flightRange;
+        private int crew;
+
+        public AirplaneBuilder withCode(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public AirplaneBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public AirplaneBuilder withModel(String model) {
+            this.model = model;
+            return this;
+        }
+
+        public AirplaneBuilder withManufactureDate(LocalDate manufactureDate) {
+            this.manufactureDate = manufactureDate;
+            return this;
+        }
+
+        public AirplaneBuilder withCapacity(int capacity) {
+            this.capacity = capacity;
+            return this;
+        }
+
+        public AirplaneBuilder withFlightRange(double flightRange) {
+            this.flightRange = flightRange;
+            return this;
+        }
+
+        public AirplaneBuilder withCrew(int crew) {
+            this.crew = crew;
+            return this;
+        }
+
+        public Airplane build() {
+            return new Airplane(this);
+        }
     }
 }

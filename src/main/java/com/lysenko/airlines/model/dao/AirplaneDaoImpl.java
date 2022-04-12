@@ -2,23 +2,17 @@ package com.lysenko.airlines.model.dao;
 
 import com.lysenko.airlines.model.ConnectionPool;
 import com.lysenko.airlines.model.entity.Airplane;
-import com.lysenko.airlines.model.entity.Crew;
-
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static com.lysenko.airlines.model.conctant.ConstantsForAirplaneDAO.*;
 
 public class AirplaneDaoImpl implements AirplaneDao {
 
-    private static final String CREATE_NEW_AIRPLANE = "INSERT INTO airplane (code, name, model, manufactureDate," +
-            " capacity, flightRange, crew_id)VALUES (?,?,?,?,?,?,?)";
-    private static final String FIND_AIRPLANE_BY_CODE = "SELECT * FROM airplane WHERE code = ?";
-    private static final String FIND_ALL_AIRPLANES = "SELECT  * FROM airplane";
-    private Airplane airplane;
-    private List<Airplane> listAirplanes;
-
-    public boolean addNewAirplane(Airplane newAirplane) {
+    public void addNewAirplane(Airplane newAirplane) {
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_NEW_AIRPLANE)) {
             preparedStatement.setString(1, newAirplane.getCode());
@@ -33,10 +27,10 @@ public class AirplaneDaoImpl implements AirplaneDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
     }
 
     public Airplane findAirplaneByCode(String code) {
+
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_AIRPLANE_BY_CODE)) {
             preparedStatement.setString(1, code);
@@ -44,22 +38,22 @@ public class AirplaneDaoImpl implements AirplaneDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return airplane;
+        return null;
     }
 
     private Airplane getAirplane(PreparedStatement preparedStatement) throws SQLException {
+        Airplane airplane = null;
         ResultSet rs = preparedStatement.executeQuery();
         if (rs.next()) {
-            airplane = new Airplane(
-
-                    rs.getString("code"),
-                    rs.getString("name"),
-                    rs.getString("model"),
-                    rs.getDate("manufactureDate").toLocalDate(),
-                    rs.getInt("capacity"),
-                    rs.getDouble("flightRange"),
-                    rs.getInt("crew_id")
-            );
+            airplane = new Airplane.AirplaneBuilder()
+                    .withCode(rs.getString("code"))
+                    .withName(rs.getString("name"))
+                    .withModel(rs.getString("model"))
+                    .withManufactureDate(rs.getDate("manufactureDate").toLocalDate())
+                    .withCapacity(rs.getInt("capacity"))
+                    .withFlightRange(rs.getDouble("flightRange"))
+                    .withCrew(rs.getInt("crew_id"))
+                    .build();
         }
         return airplane;
     }
@@ -68,46 +62,65 @@ public class AirplaneDaoImpl implements AirplaneDao {
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_AIRPLANES)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            listAirplanes = new ArrayList<>();
-            while (resultSet.next()) {
-                airplane = getAirplane(preparedStatement);
-                listAirplanes.add(airplane);
-            }
+            return  getAirplaneList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
+    private List<Airplane> getAirplaneList(  ResultSet rs) throws SQLException {
+        List<Airplane> listAirplanes = new ArrayList<>();
+        while (rs.next()) {
+            Airplane airplane = new Airplane.AirplaneBuilder()
+                    .withCode(rs.getString("code"))
+                    .withName(rs.getString("name"))
+                    .withModel(rs.getString("model"))
+                    .withManufactureDate(rs.getDate("manufactureDate").toLocalDate())
+                    .withCapacity(rs.getInt("capacity"))
+                    .withFlightRange(rs.getDouble("flightRange"))
+                    .withCrew(rs.getInt("crew_id"))
+                    .build();
+            listAirplanes.add(airplane);
         }
         return listAirplanes;
     }
 
-    public boolean deleteAirplaneByParameter(String parameter) {
-        //todo
-        return true;
+    public void deleteAirplaneByParameter(String code, String name) {
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_AIRPLANE_BY_CODE_AND_NAME)) {
+            preparedStatement.setString(1, code);
+            preparedStatement.setString(2, name);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private boolean deleteAirplaneByCode(String parameter) {
-        //todo
 
-        return true;
+    public List<Airplane> searchAirplanesByCrewName(String name) {
+        Airplane airplane;
+        List<Airplane> listAirplanes = new ArrayList<>();
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_AIRPLANES_BY_CREW_NAME)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return  getAirplaneList(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
-    private boolean deleteAirplaneByName(String parameter) {
-        //todo
-        return true;
+    public void updateAirplaneWithProvidedCrew(int crewId, String code, String name) {
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_AIRPLANE_BY_CODE_AND_NAME)) {
+            preparedStatement.setInt(1, crewId);
+            preparedStatement.setString(2, code);
+            preparedStatement.setString(3, name);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-
-    private boolean deleteAirplaneById(int parameter) {
-        //todo
-        return true;
-    }
-
-    public Airplane searchAirplanesByCrewName(String name) {
-        //todo
-        return airplane;
-    }
-
-    public boolean updateAirplaneWithProvidedCrew(Crew crew) {
-        //todo
-        return true;
-    }
-
 }
