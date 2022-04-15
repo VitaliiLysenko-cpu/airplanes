@@ -13,12 +13,12 @@ public class Demo {
     public static void main(String[] args) {
         AirplaneDaoImpl airplaneDao = new AirplaneDaoImpl();
         airplaneDao.addNewAirplane(createAirplane("123", "airplane", "U124",
-                LocalDate.of(2002, 3, 10), 270, 17345.45, 5));
+                LocalDate.of(2002, 3, 10), 270, 17345.45, 2));
         List<Airplane> airplanes = airplaneDao.findAllAirplanes();
         for (Airplane a: airplanes) {
-            System.out.println(Arrays.toString(airplanes.toArray()));
+            System.out.println(a);
         }
-
+        System.out.println("----------------------");
         System.out.println(airplaneDao.findAirplaneByCode("123"));
 
         airplaneDao.deleteAirplaneByParameter("125","airplane1");
